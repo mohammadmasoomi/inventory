@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="3600 seconds">
+
+    <property file="${inventory.log.configuration}"/> <!-- note this MUST match the VM option name -->
+    <property name="LOGGER_HOME" value="${logging.home.dir}"/> <!-- property key from the file -->
+    <property name="MAX_FILE_SIZE" value="30MB"/>
+    <property name="TOTAL_SIZE_CAP" value="20GB"/>
+    <property name="CURRENT_DATE" value="%d{yyyy-MM-dd}"/>
+    <property name="DATE_ROLLING_PATTERN" value="%d{yyyy-MM,aux}/%d{dd,aux}"/>
+    <property name="END_FILE_NAME" value="%i.log"/>
+    <property name="INVENTORY_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+    <property name="LOG_DATA_PATTERN" value=" %msg%n"/>
+    <property name="MAX_HISTORY" value="360"/>
+
+    <appender name="console-log" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${INVENTORY_LOG_PATTERN}</pattern>
+        </layout>
+    </appender>
+
+    <appender name="inventory-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGGER_HOME}/${DATE_ROLLING_PATTERN}/inventory-log.log</file>
+        <prudent>true</prudent>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGGER_HOME}/${DATE_ROLLING_PATTERN}/inventory-log-${CURRENT_DATE}_${END_FILE_NAME}
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${INVENTORY_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="inventory-jpa-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGGER_HOME}/${DATE_ROLLING_PATTERN}/inventory-jpa-log.log</file>
+        <prudent>true</prudent>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGGER_HOME}/${DATE_ROLLING_PATTERN}/inventory-jpa-log-${CURRENT_DATE}_${END_FILE_NAME}
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${INVENTORY_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.hibernate" level="DEBUG" additivity="false">
+        <appender-ref ref="inventory-jpa-log"/>
+    </logger>
+
+    <logger name="com.github.mohammadmasoomi" level="debug" additivity="false">
+        <appender-ref ref="console-log"/>
+    </logger>
+
+    <logger name="com.github.mohammadmasoomi" level="debug" additivity="false">
+        <appender-ref ref="inventory-log"/>
+    </logger>
+
+    <root level="debug">
+        <appender-ref ref="console-log"/>
+        <appender-ref ref="inventory-log"/>
+    </root>
+
+</configuration>

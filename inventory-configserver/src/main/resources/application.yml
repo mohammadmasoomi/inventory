@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: inventory-config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:config/
+#          search-locations: file:///home/mohammad/inventory/config/
+server:
+  port: 8071
+encrypt:
+  key: Ae3234rf54098HGs65gF23330JhnbvCHGeGf24398
