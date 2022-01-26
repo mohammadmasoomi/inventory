@@ -1,4 +1,4 @@
-package com.github.mohammadmasoomi.inventory.configuration;
+package com.github.mohammadmasoomi.inventory.configuration.security;
 
 import com.github.mohammadmasoomi.inventory.core.ontology.InventoryOntology;
 import com.github.mohammadmasoomi.inventory.exception.AppErrorMessage;

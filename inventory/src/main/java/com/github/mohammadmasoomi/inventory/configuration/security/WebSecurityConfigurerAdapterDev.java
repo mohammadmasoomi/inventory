@@ -1,7 +1,6 @@
-package com.github.mohammadmasoomi.inventory.configuration;
+package com.github.mohammadmasoomi.inventory.configuration.security;
 
 import com.github.mohammadmasoomi.inventory.profiles.Development;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -15,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(jsr250Enabled = true, prePostEnabled = true, securedEnabled = true, proxyTargetClass = true)
 @Development
-public class SecurityConfigurationDev extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfigurerAdapterDev extends WebSecurityConfigurerAdapter {
 
 
     private final InventoryUserDetailsService inventoryUserDetailsService;
@@ -24,7 +23,7 @@ public class SecurityConfigurationDev extends WebSecurityConfigurerAdapter {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public SecurityConfigurationDev(InventoryUserDetailsService inventoryUserDetailsService, InventoryBasicAuthenticationEntryPoint inventoryBasicAuthenticationEntryPoint, BCryptPasswordEncoder passwordEncoder) {
+    public WebSecurityConfigurerAdapterDev(InventoryUserDetailsService inventoryUserDetailsService, InventoryBasicAuthenticationEntryPoint inventoryBasicAuthenticationEntryPoint, BCryptPasswordEncoder passwordEncoder) {
         this.inventoryUserDetailsService = inventoryUserDetailsService;
         this.inventoryBasicAuthenticationEntryPoint = inventoryBasicAuthenticationEntryPoint;
         this.passwordEncoder = passwordEncoder;
@@ -50,11 +49,6 @@ public class SecurityConfigurationDev extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder builder)
             throws Exception {
         builder.userDetailsService(inventoryUserDetailsService).passwordEncoder(passwordEncoder);
-    }
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
 }

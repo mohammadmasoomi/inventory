@@ -1,4 +1,4 @@
-package com.github.mohammadmasoomi.inventory.configuration;
+package com.github.mohammadmasoomi.inventory.configuration.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
