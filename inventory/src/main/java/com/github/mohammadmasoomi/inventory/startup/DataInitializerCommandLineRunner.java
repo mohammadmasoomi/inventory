@@ -10,8 +10,8 @@ import com.github.mohammadmasoomi.inventory.core.repository.UserRepository;
 import com.github.mohammadmasoomi.inventory.stock.entity.Stock;
 import com.github.mohammadmasoomi.inventory.stock.repository.StockRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-@Configuration
+@Component
 public class DataInitializerCommandLineRunner implements CommandLineRunner {
 
     private final UserRepository userRepository;

@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-//  TODO spring problems,
 //  TODO spring application initializer,
 //  TODO spring hateoas,
 //  TODO Junit5 Test case, mockito
