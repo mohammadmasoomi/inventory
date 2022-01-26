@@ -1,7 +1,7 @@
 package com.github.mohammadmasoomi.inventory.configuration;
 
 import com.github.mohammadmasoomi.inventory.profiles.Development;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -18,14 +18,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfigurationDev extends WebSecurityConfigurerAdapter {
 
 
-    @Autowired
-    private InventoryUserDetailsService inventoryUserDetailsService;
+    private final InventoryUserDetailsService inventoryUserDetailsService;
 
-    @Autowired
-    private InventoryBasicAuthenticationEntryPoint inventoryBasicAuthenticationEntryPoint;
+    private final InventoryBasicAuthenticationEntryPoint inventoryBasicAuthenticationEntryPoint;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public SecurityConfigurationDev(InventoryUserDetailsService inventoryUserDetailsService, InventoryBasicAuthenticationEntryPoint inventoryBasicAuthenticationEntryPoint, BCryptPasswordEncoder passwordEncoder) {
+        this.inventoryUserDetailsService = inventoryUserDetailsService;
+        this.inventoryBasicAuthenticationEntryPoint = inventoryBasicAuthenticationEntryPoint;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -47,6 +50,11 @@ public class SecurityConfigurationDev extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder builder)
             throws Exception {
         builder.userDetailsService(inventoryUserDetailsService).passwordEncoder(passwordEncoder);
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

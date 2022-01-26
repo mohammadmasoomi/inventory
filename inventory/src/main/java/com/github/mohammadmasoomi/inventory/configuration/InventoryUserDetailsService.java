@@ -2,7 +2,6 @@ package com.github.mohammadmasoomi.inventory.configuration;
 
 import com.github.mohammadmasoomi.inventory.core.entity.security.User;
 import com.github.mohammadmasoomi.inventory.core.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,8 +15,11 @@ import java.util.List;
 @Service
 public class InventoryUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public InventoryUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
 
     @Override
