@@ -1,0 +1,168 @@
+{
+  "variables": [],
+  "info": {
+    "name": "inventory",
+    "_postman_id": "51ad4a8d-e4e9-dd85-3857-b4106b7314b7",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "getAllByPageNumber",
+      "request": {
+        "url": {
+          "raw": "http://localhost:8080/api/stocks?page=5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "stocks"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "5",
+              "equals": true,
+              "description": ""
+            }
+          ],
+          "variable": []
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Basic bW9oYW1tYWQ6bW9oYW1tYWQ=",
+            "description": ""
+          }
+        ],
+        "body": {},
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "save",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": {
+            "username": "root",
+            "password": "root",
+            "saveHelperData": true,
+            "showPassword": false
+          }
+        },
+        "url": "http://localhost:8080/api/stocks",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic cm9vdDpyb290",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Boat\",\n  \"currentPrice\": 100.32\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "getById",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": {
+            "username": "mohammad",
+            "password": "mohammad",
+            "saveHelperData": true,
+            "showPassword": false
+          }
+        },
+        "url": "http://localhost:8080/api/stocks/Boat",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Basic bW9oYW1tYWQ6bW9oYW1tYWQ=",
+            "description": ""
+          }
+        ],
+        "body": {},
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "delete",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": {
+            "username": "root",
+            "password": "root",
+            "saveHelperData": true,
+            "showPassword": false
+          }
+        },
+        "url": "http://localhost:8080/api/stocks/Boat",
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Basic cm9vdDpyb290",
+            "description": ""
+          }
+        ],
+        "body": {},
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "updateStockPrice",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": {
+            "username": "root",
+            "password": "root",
+            "saveHelperData": true,
+            "showPassword": false
+          }
+        },
+        "url": "http://localhost:8080/api/stocks/Boat",
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic cm9vdDpyb290",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"currentPrice\": 200.32\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    }
+  ]
+}
