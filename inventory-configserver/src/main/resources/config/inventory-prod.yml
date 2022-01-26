@@ -1,100 +1,26 @@
-ngsapta:
-  #Name of bank example: bsi,bmi,bsm,aynb,bts
-  bankName: bsi
-  camel:
-    maximumRedeliveries: 5
-    maximumRedeliveryDelay: 2000
-    datasource:
-      audit:
-        mq:
-          channel: SVRCONN
-          hostName: 192.168.165.230
-          password: '{cipher}6aceda3140182ea9f09a62ab52844b76a0ac0fa78df87061e344573bd669a729'
-          port: 1414
-          queueManager: QMAYANDE
-          queueName: saptaAudit
-          username: mqm
-      data:
-        mq:
-          channel: SVRCONN
-          enable: false
-          hostName: 192.168.165.230
-          password: '{cipher}6aceda3140182ea9f09a62ab52844b76a0ac0fa78df87061e344573bd669a729'
-          port: 1414
-          queueManager: QMAYANDE
-          queueName: saptaData
-          username: mqm
-        file:
-          enable: false
-          path: D:/development/saptaenv/messages/data
-      transaction:
-        mq:
-          channel: SVRCONN
-          enable: false
-          hostName: 192.168.165.230
-          password: '{cipher}6aceda3140182ea9f09a62ab52844b76a0ac0fa78df87061e344573bd669a729'
-          port: 1414
-          queueManager: QMAYANDE
-          queueName: saptaDev
-          username: mqm
-        file:
-          enable: false
-          path: D:/development/saptaenv/messages/transaction
-      registration:
-        mq:
-          channel: SVRCONN
-          enable: false
-          hostName: 192.168.165.230
-          password: '{cipher}6aceda3140182ea9f09a62ab52844b76a0ac0fa78df87061e344573bd669a729'
-          port: 1414
-          queueManager: QMAYANDE
-          queueName: saptaRegistration
-          username: mqm
-        file:
-          enable: false
-          path: D:/development/saptaenv/messages/registration
-
-camel:
-  springboot:
-    name: ngsapta
-    main-run-controller: true
-
-logging:
-  config: classpath:logback-spring.xml
-
 spring:
-  application:
-    name: ngsapta
-  redis:
-    port: 6379
-    database: 0
-    host: 192.168.166.27
-    jedis:
-      pool:
-        max-wait: 10ms
-    connect-timeout: 1000ms
-    timeout: 1000ms
   main:
     allow-bean-definition-overriding: true
+    allow-circular-references: true
   sql:
     init:
       mode: never
   datasource:
     hikari:
-      pool-name: ngsapta-hikari-pool
+      pool-name: inventory-hikari-pool
       maximum-pool-size: 10
-    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    password: '{cipher}662c1b85f52c551c013065e22e0c2142ad6d6aa9618a0040cf9f1545232e6d9e'
-    url: jdbc:sqlserver://192.168.166.11;databaseName=ngsapta;
-    username: sa
+    driverClassName: org.h2.Driver
+    username: '{cipher}7bf6f7410bdd05660768d190fbff9f0becda8b519b64fda56d897abc1dbf2d30'
+    password: '{cipher}bf7ebd9d7c941dc77741b1def9a6b720a6fe83002e74f25abb89c5d65c0fe8b7'
+    url: jdbc:h2:file:/home/mohammad/data/shop
   jpa:
-    database: SQL_SERVER
-    database-platform: org.hibernate.dialect.SQLServer2012Dialect
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
     open-in-view: false
     show-sql: true
     hibernate:
       #validate, update, create, create-drop
-      ddl-auto: update
+      ddl-auto: create-drop
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -102,70 +28,18 @@ spring:
       #        persistence:
       #          schema-generation:
       #            scripts:
-      #              create-target: d:/sapta-db-creation-schema.sql
+      #              create-target: /home/mohammad/inventory-db-creation-schema.sql
       #              action: create
       hibernate:
         current_session_context_class: thread
-        default_schema: dbo
         enable_lazy_load_no_trans: true
         format_sql: true
         generate_statistics: false
         use_sql_comments: true
-  mvc:
-    converters:
-      preferred-json-mapper: jackson
 
-resilience4j:
-  circuitbreaker:
-    configs:
-      default:
-        slidingWindowSize: 100
-        permittedNumberOfCallsInHalfOpenState: 10
-        waitDurationInOpenState: 5000
-        failureRateThreshold: 60
-        eventConsumerBufferSize: 10
-        registerHealthIndicator: true
-    instances:
-      sendToMessageQueue:
-        baseConfig: default
-  retry:
-    instances:
-      sendToMessageQueue:
-        maxRetryAttempts: 5
-        waitDuration: 1000
+logging:
+  config: classpath:logback-spring.xml
 
-### Tomcats General Configurations ##
-server:
-  max-http-header-size: 8KB
-  port: kdn ,wg adn0.....2
-  tomcat:
-    basedir: tomcat
-    connection-timeout: 10s
-    max-swallow-size: 2MB
-    max-http-form-post-size: 2MB
-    max-connections: 8192
-    accept-count: 100
-    threads.max: 200
-    threads.min-spare: 10
-    accesslog.enabled: true
-    accesslog.suffix: .log
-    accesslog.prefix: access_log
-    accesslog.file-date-format: .yyyy-MM-dd
-  ssl:
-    enabled: true
-    enabled-protocols: TLSv1.2
-    protocol: TLS
-    key-store: D:/development/projects/sapta/ngsapta/source/ngsapta/keystores/tls.jks
-    key-store-provider: SUN
-    key-store-type: JKS
-    key-store-password: '{cipher}928543484a7f295e88c482803b4f6d0a1674530262ff82f1e99fba5ff4ce9a7b'
-    key-alias: 1
-    ciphers: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_3DES_EDE_CBC_SHA
-    trust-store: D:/development/projects/sapta/ngsapta/source/ngsapta/keystores/integration.jks
-    trust-store-provider: SUN
-    trust-store-type: JKS
-    trust-store-password: '{cipher}928543484a7f295e88c482803b4f6d0a1674530262ff82f1e99fba5ff4ce9a7b'
-    client-auth: need
-  http2:
-    enabled: true
-
+inventory:
+  stock:
+    pageSize: 5

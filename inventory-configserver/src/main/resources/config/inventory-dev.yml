@@ -1,6 +1,7 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+    allow-circular-references: true
   sql:
     init:
       mode: never
