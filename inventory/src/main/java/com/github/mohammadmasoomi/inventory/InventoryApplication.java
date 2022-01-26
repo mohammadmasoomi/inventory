@@ -1,32 +1,19 @@
 package com.github.mohammadmasoomi.inventory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.github.mohammadmasoomi.inventory.configuration.GSONObjectSerializer;
-import com.github.mohammadmasoomi.inventory.controller.stock.dto.StockDTO;
-import com.github.mohammadmasoomi.inventory.core.entity.security.Permission;
-import com.github.mohammadmasoomi.inventory.core.entity.security.Role;
-import com.github.mohammadmasoomi.inventory.core.entity.security.User;
-import com.github.mohammadmasoomi.inventory.core.ontology.PermissionOntology;
-import com.github.mohammadmasoomi.inventory.core.repository.PermissionRepository;
-import com.github.mohammadmasoomi.inventory.core.repository.RoleRepository;
-import com.github.mohammadmasoomi.inventory.core.repository.UserRepository;
-import com.github.mohammadmasoomi.inventory.stock.entity.Stock;
-import com.github.mohammadmasoomi.inventory.stock.repository.StockRepository;
-import org.mapstruct.Mapper;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.math.BigDecimal;
-import java.util.*;
+//  TODO spring problems,
+//  TODO spring application initializer,
+//  TODO spring hateoas,
+//  TODO Junit5 Test case, mockito
+//  TODO use spring JWT Security
+//  TODO method level log
+//  TODO method actuator Prometheus Grafana
 
 @SpringBootApplication(scanBasePackages = "com.github.mohammadmasoomi")
 @EntityScan(basePackages = {"com.github.mohammadmasoomi.inventory.stock.entity", "com.github.mohammadmasoomi.inventory.core.entity"})
@@ -39,112 +26,5 @@ public class InventoryApplication {
         SpringApplication.run(InventoryApplication.class, args);
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public ObjectMapper createMapper() {
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.setSerializers(new GSONObjectSerializer());
-        return Jackson2ObjectMapperBuilder.json().modules(Collections.singletonList(simpleModule)).build();
-    }
-
-    @Bean
-    CommandLineRunner init(UserRepository userRepository, PermissionRepository permissionRepository,
-                           RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, StockRepository stockRepository) {
-        return arg0 -> {
-
-            Permission saveStockPermission = createPermission(permissionRepository,
-                    PermissionOntology.SAVE_STOCK, "SAVE_STOCK");
-            Permission deleteStockPermission = createPermission(permissionRepository,
-                    PermissionOntology.DELETE_STOCK, "DELETE_STOCK");
-            Permission getAllStockPermission = createPermission(permissionRepository,
-                    PermissionOntology.GET_ALL_STOCK, "GET_ALL_STOCK");
-            Permission getStockByNamePermission = createPermission(permissionRepository,
-                    PermissionOntology.GET_SOCK_BY_NAME, "GET_STOCK_BY_NAME");
-            Permission updateStockPermission = createPermission(permissionRepository,
-                    PermissionOntology.UPDATE_STOCK_PRICE, "UPDATE_STOCK_PRICE");
-
-            Role roleManipulate = createRole(roleRepository, "001", "MANIPULATE",
-                    deleteStockPermission, saveStockPermission, updateStockPermission);
-            Role roleReport = createRole(roleRepository, "002", "REPORT",
-                    getAllStockPermission, getStockByNamePermission);
-
-            createUser(userRepository, passwordEncoder, roleManipulate, "root");
-            createUser(userRepository, passwordEncoder, roleReport, "mohammad");
-            loadData(stockRepository);
-        };
-    }
-
-    private Permission createPermission(PermissionRepository permissionRepository, String code, String description) {
-        Permission permission = permissionRepository.findPermissionByCode(code);
-        if (permission == null) {
-            permission = new Permission();
-            permission.setCode(code);
-            permission.setDescription(description);
-            permissionRepository.save(permission);
-        }
-        return permission;
-    }
-
-    private void createUser(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, Role roleManipulate, String username) {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            user = new User();
-            user.setUsername(username);
-            user.setEnabled(true);
-            user.setPassword(passwordEncoder.encode(username));
-            user.addRole(roleManipulate);
-            userRepository.save(user);
-        }
-    }
-
-    private Role createRole(RoleRepository roleRepository, String code, String report, Permission... p) {
-        Role role = roleRepository.findRoleByCode(code);
-        if (role == null) {
-            role = new Role();
-            role.setName(report);
-            role.setCode(code);
-            role.setPermissions(new HashSet<>(Arrays.asList(p)));
-            roleRepository.save(role);
-        }
-        return role;
-    }
-
-    private void loadData(StockRepository stockRepository) {
-        long count = stockRepository.count();
-        if (count != 0) {
-            return;
-        }
-        List<Stock> stocks = new ArrayList<>();
-        stocks.add(new Stock("Mouse", BigDecimal.valueOf(40.80)));
-        stocks.add(new Stock("Keyboard", BigDecimal.valueOf(90.11)));
-        stocks.add(new Stock("Laptop DELL", BigDecimal.valueOf(980.99)));
-        stocks.add(new Stock("Laptop Lenovo", BigDecimal.valueOf(900.99)));
-        stocks.add(new Stock("MAC Book", BigDecimal.valueOf(1200.99)));
-        stocks.add(new Stock("Book Java", BigDecimal.valueOf(51.99)));
-        stocks.add(new Stock("Book C++", BigDecimal.valueOf(44.99)));
-        stocks.add(new Stock("Book Kotlin", BigDecimal.valueOf(33.22)));
-        stocks.add(new Stock("Book Docker", BigDecimal.valueOf(45.22)));
-        stocks.add(new Stock("Crampons", BigDecimal.valueOf(100.10)));
-        stocks.add(new Stock("Ice axe", BigDecimal.valueOf(80.22)));
-        stocks.add(new Stock("Pulley", BigDecimal.valueOf(12.12)));
-        stocks.add(new Stock("Climbing pack", BigDecimal.valueOf(400.11)));
-        stocks.add(new Stock("Helmet", BigDecimal.valueOf(30.11)));
-        stocks.add(new Stock("Harness", BigDecimal.valueOf(37.77)));
-        stockRepository.saveAll(stocks);
-    }
-
-    @Mapper
-    public interface StockMapper {
-        Stock destinationToSource(StockDTO destination);
-    }
-
-    @Mapper
-    public interface StockDTOMapper {
-        StockDTO sourceToDestination(Stock source);
-    }
 
 }

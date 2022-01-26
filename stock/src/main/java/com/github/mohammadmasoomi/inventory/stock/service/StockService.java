@@ -7,12 +7,12 @@ import com.github.mohammadmasoomi.inventory.stock.service.exception.StockDoesNot
 import com.github.mohammadmasoomi.inventory.stock.service.exception.StockPageDoesNotExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -21,13 +21,19 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequestScope
 public class StockService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StockService.class);
+
     @Value("${inventory.stock.pageSize}")
     private String pageSize;
-    @Autowired
-    private StockRepository stockRepository;
+
+    private final StockRepository stockRepository;
+
+    public StockService(StockRepository stockRepository) {
+        this.stockRepository = stockRepository;
+    }
 
     /**
      * This method persists given stock
