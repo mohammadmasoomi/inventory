@@ -62,7 +62,7 @@ public class StockController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = HttpStatusCodes.OK, description = "success"),
             @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Stock with this id does not exist"),
-            @ApiResponse(responseCode = "400", description = "Input data validation error, Business exception throw")
+            @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Input data validation error, Business exception throw")
     })
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('" + PermissionOntology.GET_SOCK_BY_NAME + "')")
@@ -73,9 +73,9 @@ public class StockController {
 
 
     @Operation(method = "POST", description = "save a stock")
-    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "create successfully"),
-            @ApiResponse(responseCode = "400", description = "Input data validation error"),
-            @ApiResponse(responseCode = "409", description = "Stock with this name already exist")
+    @ApiResponses(value = {@ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "create successfully"),
+            @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Input data validation error"),
+            @ApiResponse(responseCode = HttpStatusCodes.CONFLICT, description = "Stock with this name already exist")
     })
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('" + PermissionOntology.SAVE_STOCK + "')")
@@ -87,8 +87,8 @@ public class StockController {
     }
 
     @Operation(method = "PATCH", description = "Update stock price, id of stock is given in url, and price in request body (json format)")
-    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "success"),
-            @ApiResponse(responseCode = "400", description = "Input data validation error")
+    @ApiResponses(value = {@ApiResponse(responseCode = HttpStatusCodes.OK, description = "success"),
+            @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Input data validation error")
     })
     @PatchMapping(value = "{id}/{price}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('" + PermissionOntology.UPDATE_STOCK_PRICE + "')")
@@ -100,9 +100,9 @@ public class StockController {
 
     @Operation(method = "DELETE", description = "Delete a stock by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "success"),
-            @ApiResponse(responseCode = "400", description = "Input data validation error or business exception"),
-            @ApiResponse(responseCode = "404", description = "Stock with this id does not exist")
+            @ApiResponse(responseCode = HttpStatusCodes.OK, description = "success"),
+            @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Input data validation error or business exception"),
+            @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Stock with this id does not exist")
     })
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('" + PermissionOntology.DELETE_STOCK + "')")
