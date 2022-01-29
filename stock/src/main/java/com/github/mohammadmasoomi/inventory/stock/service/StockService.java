@@ -42,7 +42,7 @@ public class StockService {
      * @throws StockAlreadyExistException this exception throw when duplicated stock by name
      *                                    this method persis a stock
      */
-    public Stock save(Stock stock) throws StockAlreadyExistException {
+    public Stock save(Stock stock) {
 
         //control existence of stock by name
         boolean existenceByName = stockRepository.controlExistenceByName(stock.getName());
@@ -62,7 +62,7 @@ public class StockService {
      * @param currentPrice new price of stock
      * @throws StockDoesNotExistException when stock does not exist with the specified value
      */
-    public Stock updateStockPrice(long id, BigDecimal currentPrice) throws StockDoesNotExistException {
+    public Stock updateStockPrice(long id, BigDecimal currentPrice) {
 
         //control existence of stock by name
         Optional<Stock> result = stockRepository.findById(id);
@@ -78,11 +78,14 @@ public class StockService {
 
     /**
      * This method returns all stock
+     *
+     * @param pageNumber number of page
+     * @throws StockPageDoesNotExistException when stock page does not exist
      */
-    public List<Stock> getAll(int page) throws StockPageDoesNotExistException {
-        Pageable pageable = PageRequest.of(page, Integer.parseInt(pageSize));
+    public List<Stock> getAll(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, Integer.parseInt(pageSize));
         Page<Stock> all = stockRepository.findAll(pageable);
-        if (page > all.getTotalPages()) {
+        if (pageNumber > all.getTotalPages()) {
             throw new StockPageDoesNotExistException();
         }
         return all.getContent();
@@ -95,7 +98,7 @@ public class StockService {
      * @return a stock who its name matches with method input
      * @throws StockDoesNotExistException when stock does not exist
      */
-    public Stock getById(long id) throws StockDoesNotExistException {
+    public Stock getById(long id) {
         Optional<Stock> result = stockRepository.findById(id);
         if (result.isEmpty()) {
             LOGGER.info("Stock with id: " + id + " does not exist");
@@ -110,7 +113,7 @@ public class StockService {
      * @param id of stock that must br deleted
      * @throws StockDoesNotExistException when stock does not exist
      */
-    public void deleteById(long id) throws StockDoesNotExistException {
+    public void deleteById(long id) {
         Optional<Stock> stock = stockRepository.findById(id);
         if (stock.isEmpty()) {
             LOGGER.info("Stock with id: " + id + " does not exist");

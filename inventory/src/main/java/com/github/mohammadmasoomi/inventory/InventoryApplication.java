@@ -7,11 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-//  TODO spring application initializer,
+//  TODO method level log
 //  TODO spring hateoas,
 //  TODO Junit5 Test case, mockito
 //  TODO use spring JWT Security
-//  TODO method level log
 //  TODO method actuator Prometheus Grafana
 
 @SpringBootApplication(scanBasePackages = "com.github.mohammadmasoomi")

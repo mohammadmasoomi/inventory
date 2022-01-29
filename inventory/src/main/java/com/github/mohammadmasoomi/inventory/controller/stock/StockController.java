@@ -7,13 +7,11 @@ import com.github.mohammadmasoomi.inventory.core.ontology.PermissionOntology;
 import com.github.mohammadmasoomi.inventory.core.validation.constraints.Amount;
 import com.github.mohammadmasoomi.inventory.stock.entity.Stock;
 import com.github.mohammadmasoomi.inventory.stock.service.StockService;
-import com.github.mohammadmasoomi.inventory.stock.service.exception.StockAlreadyExistException;
-import com.github.mohammadmasoomi.inventory.stock.service.exception.StockDoesNotExistException;
-import com.github.mohammadmasoomi.inventory.stock.service.exception.StockPageDoesNotExistException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.mapstruct.factory.Mappers;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +28,9 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequestMapping(path = "/api/stocks")
 @RestController
@@ -53,9 +54,14 @@ public class StockController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"page"})
     @PreAuthorize("hasAuthority('" + PermissionOntology.GET_ALL_STOCK + "')")
     public List<StockDTO> getAllByPageNumber(@RequestParam("page") @Valid
-                                             @Min(value = 0, message = "Page number must be great than zero") int page) throws StockPageDoesNotExistException {
+                                             @Min(value = 0, message = "Page number must be great than zero") int page) {
         List<Stock> all = stockService.getAll(page);
-        return all.stream().map(STOCK_DTO_MAPPER::sourceToDestination).collect(Collectors.toList());
+        List<StockDTO> collect = all.stream().map(STOCK_DTO_MAPPER::sourceToDestination).collect(Collectors.toList());
+        collect.forEach(p -> {
+            Link selfLink = linkTo(methodOn(StockController.class).getById(p.getId())).withSelfRel();
+            p.add(selfLink);
+        });
+        return collect;
     }
 
     @Operation(method = "GET", description = "get stock by name")
@@ -66,7 +72,7 @@ public class StockController {
     })
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('" + PermissionOntology.GET_SOCK_BY_NAME + "')")
-    public StockDTO getByName(@PathVariable(name = "id") @NotNull long id) throws StockDoesNotExistException {
+    public StockDTO getById(@PathVariable(name = "id") @NotNull @Min(value = 0, message = "id must be great than zero") long id) {
         Stock stock = stockService.getById(id);
         return STOCK_DTO_MAPPER.sourceToDestination(stock);
     }
@@ -79,9 +85,9 @@ public class StockController {
     })
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('" + PermissionOntology.SAVE_STOCK + "')")
-    public ResponseEntity<Void> save(@Valid @RequestBody StockDTO stockDTO) throws StockAlreadyExistException {
-        Stock newStock = stockService.save(STOCK_MAPPER.destinationToSource(stockDTO));
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newStock.getId()).toUri();
+    public ResponseEntity<Void> save(@Valid @RequestBody StockDTO stockDTO) {
+        Stock stock = stockService.save(STOCK_MAPPER.destinationToSource(stockDTO));
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(stock.getId()).toUri();
         return ResponseEntity.status(HttpStatus.CREATED).header(HttpHeaders.LOCATION, location.getPath()).build();
 //        return ResponseEntity.created(location).build();
     }
@@ -92,8 +98,8 @@ public class StockController {
     })
     @PatchMapping(value = "{id}/{price}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('" + PermissionOntology.UPDATE_STOCK_PRICE + "')")
-    public ResponseEntity<Stock> updateStockPrice(@PathVariable(name = "id") @NotNull long id,
-                                                  @NotNull @Amount @PathVariable(name = "price") BigDecimal price) throws StockDoesNotExistException {
+    public ResponseEntity<Stock> updateStockPrice(@PathVariable(name = "id") @NotNull @Min(value = 0, message = "id must be great than zero") long id,
+                                                  @PathVariable(name = "price") @NotNull @Amount BigDecimal price) {
         Stock stock = stockService.updateStockPrice(id, price);
         return ResponseEntity.ok(stock);
     }
@@ -106,7 +112,7 @@ public class StockController {
     })
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('" + PermissionOntology.DELETE_STOCK + "')")
-    public ResponseEntity<String> deleteById(@PathVariable(name = "id") @NotNull long id) throws StockDoesNotExistException {
+    public ResponseEntity<String> deleteById(@PathVariable(name = "id") @NotNull @Min(value = 0, message = "id must be great than zero") long id) {
         stockService.deleteById(id);
         return ResponseEntity.ok("Stock deleted");
     }

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
  * Root of all exception, contains a code for
  * describe an error message with (code, httpCode,message) format.
  */
-public class GeneralException extends Exception {
+public class GeneralException extends RuntimeException {
 
     private final String code;
     private final HttpStatus httpCode;
