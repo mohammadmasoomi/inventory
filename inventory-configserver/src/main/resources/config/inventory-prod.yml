@@ -43,3 +43,9 @@ logging:
 inventory:
   stock:
     pageSize: 5
+  jwt:
+    secret: inventorySecretKey
+management:
+  health:
+    refresh:
+      enabled: true

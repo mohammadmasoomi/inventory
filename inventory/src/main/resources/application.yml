@@ -6,7 +6,3 @@ spring:
     active: dev
   config:
     import: configserver:http://localhost:8071/
-management:
-  health:
-    refresh:
-      enabled: true
