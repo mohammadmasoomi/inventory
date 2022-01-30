@@ -14,7 +14,12 @@ public enum AppErrorMessage implements ErrorMessage {
     TEMPORARY_ACCOUNT_LOCKED("206", HttpStatus.UNAUTHORIZED, "Account is temporarily locked"),
     ACCOUNT_DENIED("207", HttpStatus.UNAUTHORIZED, "Access denied error"),
     INSUFFICIENT_AUTHENTICATION("208", HttpStatus.UNAUTHORIZED, "Insufficient authentication"),
-    UNKNOWN_AUTHENTICATION_ERROR("209", HttpStatus.UNAUTHORIZED, "Unknown authentication error");
+    UNKNOWN_AUTHENTICATION_ERROR("209", HttpStatus.UNAUTHORIZED, "Unknown authentication error"),
+    JWT_EXPIRED_OR_INVALID_TOKEN_ERROR("210", HttpStatus.UNAUTHORIZED, "Expired JWT token"),
+    UNSUPPORTED_JWT_TOKEN_ERROR("211", HttpStatus.UNAUTHORIZED, "Unsupported JWT token"),
+    MALFORMED_JWT_TOKEN_ERROR("212", HttpStatus.UNAUTHORIZED, "Malformed JWT token"),
+    SIGNATURE_TOKEN_ERROR("213", HttpStatus.UNAUTHORIZED, "JWT token signature signature validation fails"),
+    JWT_TOKEN_IS_NULL_ERROR("214", HttpStatus.UNAUTHORIZED, "JWT token can not be empty");
 
     private final String code;
     private final String message;

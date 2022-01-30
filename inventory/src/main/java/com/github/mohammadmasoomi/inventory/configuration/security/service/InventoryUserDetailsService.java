@@ -1,4 +1,4 @@
-package com.github.mohammadmasoomi.inventory.configuration.security;
+package com.github.mohammadmasoomi.inventory.configuration.security.service;
 
 import com.github.mohammadmasoomi.inventory.core.entity.security.User;
 import com.github.mohammadmasoomi.inventory.core.repository.UserRepository;

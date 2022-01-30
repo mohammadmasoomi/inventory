@@ -1,6 +1,9 @@
 package com.github.mohammadmasoomi.inventory.configuration.security;
 
 
+import com.github.mohammadmasoomi.inventory.configuration.security.jwt.JwtTokenFilterConfigurer;
+import com.github.mohammadmasoomi.inventory.configuration.security.jwt.JwtTokenProvider;
+import com.github.mohammadmasoomi.inventory.configuration.security.service.InventoryUserDetailsService;
 import com.github.mohammadmasoomi.inventory.profiles.Development;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -22,15 +24,15 @@ public class JwtWebSecurityConfigurerAdapterDev extends WebSecurityConfigurerAda
 
     private final InventoryBasicAuthenticationEntryPoint authenticationEntryPoint;
     private final InventoryUserDetailsService userDetailsService;
-    private final JwtRequestFilter jwtRequestFilter;
+    private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public JwtWebSecurityConfigurerAdapterDev(InventoryBasicAuthenticationEntryPoint authenticationEntryPoint, JwtRequestFilter jwtRequestFilter
+    public JwtWebSecurityConfigurerAdapterDev(InventoryBasicAuthenticationEntryPoint authenticationEntryPoint, JwtTokenProvider jwtTokenProvider
             , InventoryUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.userDetailsService = userDetailsService;
-        this.jwtRequestFilter = jwtRequestFilter;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -52,16 +54,16 @@ public class JwtWebSecurityConfigurerAdapterDev extends WebSecurityConfigurerAda
         // We don't need CSRF for this example
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
-                .authorizeRequests().antMatchers("/authenticate").permitAll().
+                .authorizeRequests().antMatchers("/authenticate").permitAll()
                 // all other requests need to be authenticated
-                        anyRequest().authenticated().and().
+                .anyRequest().authenticated().and()
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
-                        exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and().sessionManagement()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Add a filter to validate the tokens with every request
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
     }
 
 }

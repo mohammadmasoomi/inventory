@@ -43,8 +43,11 @@ logging:
 inventory:
   stock:
     pageSize: 5
-  jwt:
-    secret: inventorySecretKey
+  security:
+    jwt:
+      token:
+        secret-key: '{cipher}f06ab245303942f9f84d61dd5a79c12e81b9f7d398ece71ea442cf080e620075eca3facf503ba5c177b78314af6b8658'
+        expire-length: 3600000
 management:
   health:
     refresh:
