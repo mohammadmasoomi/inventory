@@ -1,18 +1,25 @@
 package com.github.mohammadmasoomi.inventory.stock.entity;
 
 import com.github.mohammadmasoomi.inventory.core.entity.base.BaseEntity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Stock extends BaseEntity {
 
+    @Serial
     private static final long serialVersionUID = -8161441370831092867L;
 
     @Column(nullable = false, unique = true)
@@ -24,42 +31,9 @@ public class Stock extends BaseEntity {
     @Column(nullable = false)
     private Date lastUpdate;
 
-    public Stock() {
-    }
-
     public Stock(String name, BigDecimal currentPrice) {
         this.name = name;
         this.currentPrice = currentPrice;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getCurrentPrice() {
-        return currentPrice;
-    }
-
-    public void setCurrentPrice(BigDecimal currentPrice) {
-        this.currentPrice = currentPrice;
-    }
-
-    public Date getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(Date lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    @PrePersist
-    @PreUpdate
-    public void lastUpdate() {
-        this.lastUpdate = new Date();
     }
 
     @Override
@@ -67,7 +41,7 @@ public class Stock extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Stock stock = (Stock) o;
-        return name.equals(stock.name);
+        return Objects.equals(name, stock.name);
     }
 
     @Override

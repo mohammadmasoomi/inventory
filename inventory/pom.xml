@@ -13,6 +13,9 @@
     <artifactId>inventory</artifactId>
     <name>inventory</name>
     <version>0.0.1-SNAPSHOT</version>
+    <properties>
+        <start-class>com.github.mohammadmasoomi.inventory.InventoryApplication</start-class>
+    </properties>
 
     <dependencies>
 
@@ -56,5 +59,22 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot-version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
