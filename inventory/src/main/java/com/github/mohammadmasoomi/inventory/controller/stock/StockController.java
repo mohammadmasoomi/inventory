@@ -10,6 +10,7 @@ import com.github.mohammadmasoomi.inventory.stock.service.StockService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.mapstruct.factory.Mappers;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
@@ -47,7 +48,7 @@ public class StockController {
     }
 
 
-    @Operation(method = "GET", description = "get all stock by page number")
+    @Operation(method = "GET", description = "get all stock by page number", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {@ApiResponse(responseCode = HttpStatusCodes.OK, description = "success"),
             @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Stock page does not exist"),
             @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Page number validation error")})
@@ -64,7 +65,7 @@ public class StockController {
         return collect;
     }
 
-    @Operation(method = "GET", description = "get stock by name")
+    @Operation(method = "GET", description = "get stock by name", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = HttpStatusCodes.OK, description = "success"),
             @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Stock with this id does not exist"),
@@ -78,7 +79,7 @@ public class StockController {
     }
 
 
-    @Operation(method = "POST", description = "save a stock")
+    @Operation(method = "POST", description = "save a stock", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {@ApiResponse(responseCode = HttpStatusCodes.CREATED, description = "create successfully"),
             @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Input data validation error"),
             @ApiResponse(responseCode = HttpStatusCodes.CONFLICT, description = "Stock with this name already exist")
@@ -92,7 +93,8 @@ public class StockController {
 //        return ResponseEntity.created(location).build();
     }
 
-    @Operation(method = "PATCH", description = "Update stock price, id of stock is given in url, and price in request body (json format)")
+    @Operation(method = "PATCH", description = "Update stock price, id of stock is given in url, and price in request body (json format)",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {@ApiResponse(responseCode = HttpStatusCodes.OK, description = "success"),
             @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Input data validation error")
     })
@@ -104,7 +106,7 @@ public class StockController {
         return ResponseEntity.ok(stock);
     }
 
-    @Operation(method = "DELETE", description = "Delete a stock by id")
+    @Operation(method = "DELETE", description = "Delete a stock by id", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = HttpStatusCodes.OK, description = "success"),
             @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Input data validation error or business exception"),
