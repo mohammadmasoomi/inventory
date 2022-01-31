@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="3600 seconds">
 
-    <property file="${inventory.log.configuration}"/> <!-- note this MUST match the VM option name -->
-    <property name="LOGGER_HOME" value="${logging.home.dir}"/> <!-- property key from the file -->
+    <property name="LOGGER_HOME" value="${inventory.log.path}"/> <!-- note this MUST match the VM option name -->
     <property name="MAX_FILE_SIZE" value="30MB"/>
     <property name="TOTAL_SIZE_CAP" value="20GB"/>
     <property name="CURRENT_DATE" value="%d{yyyy-MM-dd}"/>
