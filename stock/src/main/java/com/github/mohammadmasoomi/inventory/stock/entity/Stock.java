@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -34,6 +36,12 @@ public class Stock extends BaseEntity {
     public Stock(String name, BigDecimal currentPrice) {
         this.name = name;
         this.currentPrice = currentPrice;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void lastUpdate() {
+        this.lastUpdate = new Date();
     }
 
     @Override
