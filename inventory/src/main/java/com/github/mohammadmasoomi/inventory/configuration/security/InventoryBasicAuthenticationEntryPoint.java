@@ -15,8 +15,7 @@ import java.io.IOException;
 @Component
 public class InventoryBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+    public static AppErrorMessage getAuthenticationErrorMessage(AuthenticationException authException) {
         AppErrorMessage authenticationError = AppErrorMessage.UNKNOWN_AUTHENTICATION_ERROR;
         // wrong credential
         if (authException instanceof BadCredentialsException) {
@@ -32,6 +31,12 @@ public class InventoryBasicAuthenticationEntryPoint extends BasicAuthenticationE
         } else if (authException instanceof InsufficientAuthenticationException) {
             authenticationError = AppErrorMessage.INSUFFICIENT_AUTHENTICATION;
         }
+        return authenticationError;
+    }
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        AppErrorMessage authenticationError = getAuthenticationErrorMessage(authException);
         response.addHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"");
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(InventoryOntology.ERROR_CODE, authenticationError.getCode());
@@ -46,4 +51,5 @@ public class InventoryBasicAuthenticationEntryPoint extends BasicAuthenticationE
         setRealmName("inventory");
         super.afterPropertiesSet();
     }
+
 }

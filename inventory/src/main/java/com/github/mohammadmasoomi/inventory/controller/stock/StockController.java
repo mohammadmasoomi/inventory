@@ -1,6 +1,6 @@
 package com.github.mohammadmasoomi.inventory.controller.stock;
 
-import com.github.mohammadmasoomi.inventory.configuration.MapperConfiguration;
+import com.github.mohammadmasoomi.inventory.configuration.mapper.StockMapper;
 import com.github.mohammadmasoomi.inventory.controller.stock.dto.StockDTO;
 import com.github.mohammadmasoomi.inventory.core.ontology.HttpStatusCodes;
 import com.github.mohammadmasoomi.inventory.core.ontology.PermissionOntology;
@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.mapstruct.factory.Mappers;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,15 +37,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Validated
 public class StockController {
 
-    private static final MapperConfiguration.StockMapper STOCK_MAPPER = Mappers.getMapper(MapperConfiguration.StockMapper.class);
-    private static final MapperConfiguration.StockDTOMapper STOCK_DTO_MAPPER = Mappers.getMapper(MapperConfiguration.StockDTOMapper.class);
-
+    private final StockMapper stockMapper;
     private final StockService stockService;
 
-    public StockController(StockService stockService) {
+    public StockController(StockMapper stockMapper, StockService stockService) {
+        this.stockMapper = stockMapper;
         this.stockService = stockService;
     }
-
 
     @Operation(method = "GET", description = "get all stock by page number", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {@ApiResponse(responseCode = HttpStatusCodes.OK, description = "success"),
@@ -57,7 +54,7 @@ public class StockController {
     public List<StockDTO> getAllByPageNumber(@RequestParam("page") @Valid
                                              @Min(value = 0, message = "Page number must be great than zero") int page) {
         List<Stock> all = stockService.getAll(page);
-        List<StockDTO> collect = all.stream().map(STOCK_DTO_MAPPER::sourceToDestination).collect(Collectors.toList());
+        List<StockDTO> collect = all.stream().map(stockMapper::sourceToDestination).collect(Collectors.toList());
         collect.forEach(p -> {
             Link selfLink = linkTo(methodOn(StockController.class).getById(p.getId())).withSelfRel();
             p.add(selfLink);
@@ -75,7 +72,7 @@ public class StockController {
     @PreAuthorize("hasAuthority('" + PermissionOntology.GET_SOCK_BY_NAME + "')")
     public StockDTO getById(@PathVariable(name = "id") @NotNull @Min(value = 0, message = "id must be great than zero") long id) {
         Stock stock = stockService.getById(id);
-        return STOCK_DTO_MAPPER.sourceToDestination(stock);
+        return stockMapper.sourceToDestination(stock);
     }
 
 
@@ -87,7 +84,7 @@ public class StockController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('" + PermissionOntology.SAVE_STOCK + "')")
     public ResponseEntity<Void> save(@Valid @RequestBody StockDTO stockDTO) {
-        Stock stock = stockService.save(STOCK_MAPPER.destinationToSource(stockDTO));
+        Stock stock = stockService.save(stockMapper.destinationToSource(stockDTO));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(stock.getId()).toUri();
         return ResponseEntity.status(HttpStatus.CREATED).header(HttpHeaders.LOCATION, location.getPath()).build();
 //        return ResponseEntity.created(location).build();
