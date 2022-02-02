@@ -109,7 +109,7 @@ public class StockController {
             @ApiResponse(responseCode = HttpStatusCodes.BAD_REQUEST, description = "Input data validation error or business exception"),
             @ApiResponse(responseCode = HttpStatusCodes.NOT_FOUND, description = "Stock with this id does not exist")
     })
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/{id}", produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasAuthority('" + PermissionOntology.DELETE_STOCK + "')")
     public ResponseEntity<String> deleteById(@PathVariable(name = "id") @NotNull @Min(value = 0, message = "id must be great than zero") long id) {
         stockService.deleteById(id);
