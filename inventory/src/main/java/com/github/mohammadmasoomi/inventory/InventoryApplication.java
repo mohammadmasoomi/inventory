@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-//  TODO Junit5 Test case, mockito
 //  TODO method actuator Prometheus Grafana
 
 @SpringBootApplication(scanBasePackages = "com.github.mohammadmasoomi")

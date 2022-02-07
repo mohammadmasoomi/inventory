@@ -69,7 +69,7 @@ public class JwtWebSecurityConfigurerAdapterDev extends WebSecurityConfigurerAda
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/swagger-ui/**", "/v3/api-docs/**");
+        web.ignoring().antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/actuator/**", "/actuator/prometheus/**");
     }
 
 }
