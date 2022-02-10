@@ -6,10 +6,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.io.Serial;
 
 public class BaseSpecification<T> implements Specification<T> {
 
-    private SearchCriteria criteria;
+    @Serial
+    private static final long serialVersionUID = 3354278435526830700L;
+
+    private final SearchCriteria criteria;
 
     public BaseSpecification(SearchCriteria criteria) {
         this.criteria = criteria;
