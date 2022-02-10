@@ -1,7 +1,7 @@
 package com.github.mohammadmasoomi.inventory.configuration.security.service;
 
 import com.github.mohammadmasoomi.inventory.core.entity.security.User;
-import com.github.mohammadmasoomi.inventory.core.repository.UserRepository;
+import com.github.mohammadmasoomi.inventory.core.repository.security.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

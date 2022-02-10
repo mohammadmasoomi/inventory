@@ -1,9 +1,12 @@
 package com.github.mohammadmasoomi.inventory.stock.service;
 
+import com.github.mohammadmasoomi.inventory.core.repository.base.SearchCriteria;
 import com.github.mohammadmasoomi.inventory.stock.entity.Stock;
 import com.github.mohammadmasoomi.inventory.stock.repository.StockRepository;
+import com.github.mohammadmasoomi.inventory.stock.repository.StockSpecification;
 import com.github.mohammadmasoomi.inventory.stock.service.exception.StockAlreadyExistException;
 import com.github.mohammadmasoomi.inventory.stock.service.exception.StockDoesNotExistException;
+import com.github.mohammadmasoomi.inventory.stock.service.exception.StockNotFoundByCriteriaException;
 import com.github.mohammadmasoomi.inventory.stock.service.exception.StockPageDoesNotExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -120,6 +124,45 @@ public class StockService {
             throw new StockDoesNotExistException();
         }
         stockRepository.delete(stock.get());
+    }
+
+    /**
+     * search on stock by criteria
+     *
+     * @param searchCriteria criteria for search stock
+     * @throws StockNotFoundByCriteriaException when stock not found
+     */
+    public List<Stock> getAll(SearchCriteria searchCriteria) {
+        StockSpecification stockSpecification = new StockSpecification(searchCriteria);
+        List<Stock> all = stockRepository.findAll(stockSpecification);
+        if (all.isEmpty()) {
+            LOGGER.info("Stock with searchCriteria: " + searchCriteria + " does not exist");
+            throw new StockNotFoundByCriteriaException();
+        }
+        return all;
+    }
+
+    /**
+     * search on stock by criteria list with and operation
+     *
+     * @param searchCriteriaList criteria list for search stock
+     * @throws StockNotFoundByCriteriaException when stock not found
+     */
+    public List<Stock> getAll(List<SearchCriteria> searchCriteriaList) {
+        Specification<Stock> where = null;
+        for (int index = 0; index < searchCriteriaList.size(); index++) {
+            if (index == 0) {
+                where = Specification.where(new StockSpecification(searchCriteriaList.get(index)));
+            } else {
+                where.and(new StockSpecification(searchCriteriaList.get(index)));
+            }
+        }
+        List<Stock> all = stockRepository.findAll(where);
+        if (all.isEmpty()) {
+            LOGGER.info("Stock with searchCriteriaList: " + searchCriteriaList + " does not exist");
+            throw new StockNotFoundByCriteriaException();
+        }
+        return all;
     }
 
 }

@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 public enum StockErrorMessage implements ErrorMessage {
     STOCK_ALREADY_EXIST_BY_NAME("100", HttpStatus.CONFLICT, "Stock with this name already exist"),
     STOCK_DOES_NOT_EXIST_BY_ID("101", HttpStatus.NOT_FOUND, "Stock with this id does not exist"),
-    STOCK_PAGE_DOES_NOT_EXIST("102", HttpStatus.NOT_FOUND, "Stock page does not exist");
+    STOCK_PAGE_DOES_NOT_EXIST("102", HttpStatus.NOT_FOUND, "Stock page does not exist"),
+    STOCK_NOT_FOUND_BY_CRITERIA("103", HttpStatus.NOT_FOUND, "stock not found by criteria");
 
     private final String code;
     private final String message;

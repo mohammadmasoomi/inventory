@@ -1,4 +1,4 @@
-package com.github.mohammadmasoomi.inventory.core.repository;
+package com.github.mohammadmasoomi.inventory.core.repository.security;
 
 import com.github.mohammadmasoomi.inventory.core.entity.security.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

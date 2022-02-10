@@ -3,7 +3,7 @@ package com.github.mohammadmasoomi.inventory.configuration.security.service;
 import com.github.mohammadmasoomi.inventory.configuration.security.InventoryBasicAuthenticationEntryPoint;
 import com.github.mohammadmasoomi.inventory.configuration.security.jwt.JwtTokenProvider;
 import com.github.mohammadmasoomi.inventory.core.entity.security.User;
-import com.github.mohammadmasoomi.inventory.core.repository.UserRepository;
+import com.github.mohammadmasoomi.inventory.core.repository.security.UserRepository;
 import com.github.mohammadmasoomi.inventory.exception.AppErrorMessage;
 import com.github.mohammadmasoomi.inventory.exception.InventoryJWTException;
 import org.springframework.security.authentication.AuthenticationManager;
