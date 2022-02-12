@@ -2,7 +2,6 @@ package com.github.mohammadmasoomi.inventory.exception;
 
 import com.github.mohammadmasoomi.inventory.core.exception.GeneralException;
 import com.github.mohammadmasoomi.inventory.core.ontology.InventoryOntology;
-import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +20,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class InventoryResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -28,56 +29,56 @@ public class InventoryResponseEntityExceptionHandler extends ResponseEntityExcep
     private static final Logger LOGGER = LoggerFactory.getLogger(InventoryResponseEntityExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
-    public final ResponseEntity<Object> handleAllExceptions(Exception exception) {
+    public final ResponseEntity<Map<String, Object>> handleAllExceptions(Exception exception) {
         LOGGER.debug(exception.getMessage(), exception);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(InventoryOntology.ERROR_CODE, AppErrorMessage.SERVER_INTERNAL_ERROR.getCode());
-        jsonObject.addProperty(InventoryOntology.ERROR_MESSAGE, AppErrorMessage.SERVER_INTERNAL_ERROR.getMessage());
+        Map<String, Object> jsonObject = new HashMap<>();
+        jsonObject.put(InventoryOntology.ERROR_CODE, AppErrorMessage.SERVER_INTERNAL_ERROR.getCode());
+        jsonObject.put(InventoryOntology.ERROR_MESSAGE, AppErrorMessage.SERVER_INTERNAL_ERROR.getMessage());
         return new ResponseEntity<>(jsonObject, AppErrorMessage.SERVER_INTERNAL_ERROR.getHttpCode());
     }
 
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public final ResponseEntity<Object> handleMethodArgumentTypeMismatchExceptions(MethodArgumentTypeMismatchException exception) {
+    public final ResponseEntity<Map<String, Object>> handleMethodArgumentTypeMismatchExceptions(MethodArgumentTypeMismatchException exception) {
         LOGGER.debug(exception.getMessage(), exception);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(InventoryOntology.ERROR_CODE, AppErrorMessage.VALIDATION_ERROR.getCode());
-        jsonObject.addProperty(InventoryOntology.ERROR_MESSAGE, AppErrorMessage.VALIDATION_ERROR.getMessage());
+        Map<String, Object> jsonObject = new HashMap<>();
+        jsonObject.put(InventoryOntology.ERROR_CODE, AppErrorMessage.VALIDATION_ERROR.getCode());
+        jsonObject.put(InventoryOntology.ERROR_MESSAGE, AppErrorMessage.VALIDATION_ERROR.getMessage());
         return new ResponseEntity<>(jsonObject, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(GeneralException.class)
-    public final ResponseEntity<Object> handleAllExceptions(GeneralException exception) {
+    public final ResponseEntity<Map<String, Object>> handleAllExceptions(GeneralException exception) {
         LOGGER.debug(exception.getMessage(), exception);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(InventoryOntology.ERROR_CODE, exception.getCode());
-        jsonObject.addProperty(InventoryOntology.ERROR_MESSAGE, exception.getMessage());
+        Map<String, Object> jsonObject = new HashMap<>();
+        jsonObject.put(InventoryOntology.ERROR_CODE, exception.getCode());
+        jsonObject.put(InventoryOntology.ERROR_MESSAGE, exception.getMessage());
         return new ResponseEntity<>(jsonObject, exception.getHttpCode());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<JsonObject> handleAccessDeniedExceptions(AccessDeniedException exception) {
+    public ResponseEntity<Map<String, Object>> handleAccessDeniedExceptions(AccessDeniedException exception) {
         logger.debug(exception.getMessage(), exception);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(InventoryOntology.ERROR_MESSAGE, AppErrorMessage.ACCOUNT_DENIED.getMessage());
-        jsonObject.addProperty(InventoryOntology.ERROR_CODE, AppErrorMessage.ACCOUNT_DENIED.getCode());
+        Map<String, Object> jsonObject = new HashMap<>();
+        jsonObject.put(InventoryOntology.ERROR_MESSAGE, AppErrorMessage.ACCOUNT_DENIED.getMessage());
+        jsonObject.put(InventoryOntology.ERROR_CODE, AppErrorMessage.ACCOUNT_DENIED.getCode());
         return new ResponseEntity<>(jsonObject, AppErrorMessage.ACCOUNT_DENIED.getHttpCode());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<JsonObject> handleConstraintViolationExceptions(ConstraintViolationException exception) {
+    public ResponseEntity<Map<String, Object>> handleConstraintViolationExceptions(ConstraintViolationException exception) {
         logger.debug(exception.getMessage(), exception);
-        JsonObject errorMessagesJsonObject = new JsonObject();
-        for (ConstraintViolation constraintViolation : exception.getConstraintViolations()) {
+        Map<String, Object> errorMessagesJsonObject = new HashMap<>();
+        for (ConstraintViolation<?> constraintViolation : exception.getConstraintViolations()) {
             String propertyPath = constraintViolation.getPropertyPath().toString();
             String fieldName = propertyPath.substring(propertyPath.lastIndexOf(".") + 1);
             String errorMessage = constraintViolation.getMessage();
-            errorMessagesJsonObject.addProperty(fieldName, errorMessage);
+            errorMessagesJsonObject.put(fieldName, errorMessage);
         }
 
-        JsonObject result = new JsonObject();
-        result.addProperty(InventoryOntology.ERROR_CODE, AppErrorMessage.VALIDATION_ERROR.getCode());
-        result.add(InventoryOntology.ERROR_MESSAGE, errorMessagesJsonObject);
+        Map<String, Object> result = new HashMap<>();
+        result.put(InventoryOntology.ERROR_CODE, AppErrorMessage.VALIDATION_ERROR.getCode());
+        result.put(InventoryOntology.ERROR_MESSAGE, errorMessagesJsonObject);
         return new ResponseEntity<>(result, AppErrorMessage.VALIDATION_ERROR.getHttpCode());
     }
 
@@ -86,20 +87,20 @@ public class InventoryResponseEntityExceptionHandler extends ResponseEntityExcep
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
                                                                   HttpStatus status, WebRequest request) {
         LOGGER.debug(ex.getMessage(), ex);
-        JsonObject errorMessagesJsonObject = new JsonObject();
+        Map<String, Object> errorMessagesJsonObject = new HashMap<>();
         if (ex.getBindingResult().getFieldErrorCount() != 0) {
             for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-                errorMessagesJsonObject.addProperty(fieldError.getField(), fieldError.getDefaultMessage());
+                errorMessagesJsonObject.put(fieldError.getField(), fieldError.getDefaultMessage());
             }
 
         } else {
             for (ObjectError allError : ex.getBindingResult().getAllErrors()) {
-                errorMessagesJsonObject.addProperty("Invalid Input Data", allError.getDefaultMessage());
+                errorMessagesJsonObject.put("Invalid Input Data", allError.getDefaultMessage());
             }
         }
-        JsonObject result = new JsonObject();
-        result.addProperty(InventoryOntology.ERROR_CODE, AppErrorMessage.VALIDATION_ERROR.getCode());
-        result.add(InventoryOntology.ERROR_MESSAGE, errorMessagesJsonObject);
+        Map<String, Object> result = new HashMap<>();
+        result.put(InventoryOntology.ERROR_CODE, AppErrorMessage.VALIDATION_ERROR.getCode());
+        result.put(InventoryOntology.ERROR_MESSAGE, errorMessagesJsonObject);
         return new ResponseEntity<>(result, AppErrorMessage.VALIDATION_ERROR.getHttpCode());
     }
 
@@ -107,9 +108,9 @@ public class InventoryResponseEntityExceptionHandler extends ResponseEntityExcep
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
                                                                   HttpStatus status, WebRequest request) {
         LOGGER.debug(ex.getMessage(), ex);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(InventoryOntology.ERROR_CODE, AppErrorMessage.VALIDATION_ERROR.getCode());
-        jsonObject.addProperty(InventoryOntology.ERROR_MESSAGE, AppErrorMessage.VALIDATION_ERROR.getMessage());
+        Map<String, Object> jsonObject = new HashMap<>();
+        jsonObject.put(InventoryOntology.ERROR_CODE, AppErrorMessage.VALIDATION_ERROR.getCode());
+        jsonObject.put(InventoryOntology.ERROR_MESSAGE, AppErrorMessage.VALIDATION_ERROR.getMessage());
         return new ResponseEntity<>(jsonObject, AppErrorMessage.VALIDATION_ERROR.getHttpCode());
     }
 

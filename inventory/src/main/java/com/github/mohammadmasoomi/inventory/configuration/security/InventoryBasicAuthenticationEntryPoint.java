@@ -2,7 +2,6 @@ package com.github.mohammadmasoomi.inventory.configuration.security;
 
 import com.github.mohammadmasoomi.inventory.core.ontology.InventoryOntology;
 import com.github.mohammadmasoomi.inventory.exception.AppErrorMessage;
-import com.google.gson.JsonObject;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
@@ -11,6 +10,8 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class InventoryBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
@@ -38,9 +39,9 @@ public class InventoryBasicAuthenticationEntryPoint extends BasicAuthenticationE
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         AppErrorMessage authenticationError = getAuthenticationErrorMessage(authException);
         response.addHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"");
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(InventoryOntology.ERROR_CODE, authenticationError.getCode());
-        jsonObject.addProperty(InventoryOntology.ERROR_MESSAGE, authenticationError.getMessage());
+        Map<String, Object> jsonObject = new HashMap<>();
+        jsonObject.put(InventoryOntology.ERROR_CODE, authenticationError.getCode());
+        jsonObject.put(InventoryOntology.ERROR_MESSAGE, authenticationError.getMessage());
         response.setHeader("Content-Type", "application/json;charset=UTF-8");
         response.setStatus(authenticationError.getHttpCode().value());
         response.getWriter().println(jsonObject);

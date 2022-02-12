@@ -2,7 +2,6 @@ package com.github.mohammadmasoomi.inventory.configuration.security.jwt;
 
 import com.github.mohammadmasoomi.inventory.core.ontology.InventoryOntology;
 import com.github.mohammadmasoomi.inventory.exception.InventoryJWTException;
-import com.google.gson.JsonObject;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -12,6 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 // We should use OncePerRequestFilter since we are doing a database call, there is no point in doing this more than once
 public class JwtTokenFilter extends OncePerRequestFilter {
@@ -36,9 +37,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             httpServletResponse.reset();
             httpServletResponse.setHeader("Content-Type", "application/json;charset=UTF-8");
             httpServletResponse.setStatus(ex.getHttpCode().value());
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty(InventoryOntology.ERROR_CODE, ex.getCode());
-            jsonObject.addProperty(InventoryOntology.ERROR_MESSAGE, ex.getMessage());
+            Map<String, Object> jsonObject = new HashMap<>();
+            jsonObject.put(InventoryOntology.ERROR_CODE, ex.getCode());
+            jsonObject.put(InventoryOntology.ERROR_MESSAGE, ex.getMessage());
             httpServletResponse.getWriter().write(jsonObject.toString());
             return;
         }
