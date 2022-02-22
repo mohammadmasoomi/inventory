@@ -3,7 +3,7 @@
 FROM openjdk:11-slim as build
 
 # Add Maintainer Info
-LABEL maintainer="Mohammad Masoomi <m_masoumy@isc.co.ir>"
+LABEL maintainer="Mohammad Masoomi <mohammad.masoomi@gmail.com>"
 
 # The application's jar file
 ARG JAR_FILE
