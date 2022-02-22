@@ -1,4 +1,4 @@
-# inventory-parent
+# inventory
 
 **This project is a demo for the:**
 <br/>&nbsp;&nbsp;&nbsp;&nbsp;Spring-config-server
