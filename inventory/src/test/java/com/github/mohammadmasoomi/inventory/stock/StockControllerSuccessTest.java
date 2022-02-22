@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.mohammadmasoomi.inventory.configuration.mapper.StockMapper;
 import com.github.mohammadmasoomi.inventory.configuration.mapper.StockMapperImpl;
-import com.github.mohammadmasoomi.inventory.controller.stock.StockController;
 import com.github.mohammadmasoomi.inventory.controller.stock.dto.StockDTO;
+import com.github.mohammadmasoomi.inventory.controller.stock.impl.StockControllerImpl;
 import com.github.mohammadmasoomi.inventory.stock.entity.Stock;
 import com.github.mohammadmasoomi.inventory.stock.service.StockService;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +49,7 @@ public class StockControllerSuccessTest {
     @Spy
     private StockMapper stockMapper = new StockMapperImpl();
     @InjectMocks
-    private StockController stockController;
+    private StockControllerImpl stockController;
 
     @BeforeEach
     public void setUp() {
