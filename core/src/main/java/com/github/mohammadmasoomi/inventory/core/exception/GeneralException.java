@@ -3,7 +3,7 @@ package com.github.mohammadmasoomi.inventory.core.exception;
 import org.springframework.http.HttpStatus;
 
 /**
- * Root of all exception, contains a code for
+ * Root of all inventory exception, contains a code for
  * describe an error message with (code, httpCode,message) format.
  */
 public class GeneralException extends RuntimeException {
